@@ -2,17 +2,31 @@ import { Section } from 'components/Section/Section';
 import { Form } from 'components/Form/Form';
 import { Contscts } from 'components/Contacts/Contacts';
 
-import { Component } from 'react';
+// import { Component } from 'react';
+import { useState, useEffect } from 'react';
+
 import { nanoid } from 'nanoid';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const KEY = 'contacts';
 
-  formSubmit = ({ name, number }) => {
-    const checkedName = this.state.contacts.find(elem => {
+export const App = () => {
+  // state = {
+  //   contacts: [],
+  //   filter: '',
+  // };
+
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    const savedContacts = JSON.parse(localStorage.getItem(KEY));
+    if (savedContacts) {
+      setContacts(savedContacts);
+    }
+  }, []);
+
+  const formSubmit = (name, number) => {
+    const checkedName = contacts.find(elem => {
       return elem.name === name;
     });
 
@@ -27,53 +41,80 @@ export class App extends Component {
       number,
     };
 
-    this.setState(prevState => {
-      const ContactsAll = [...prevState.contacts];
-      ContactsAll.push(newContact);
-      return {
-        name,
-        number,
-        contacts: [...ContactsAll],
-      };
+    // this.setState(prevState => {
+    //   const ContactsAll = [...prevState.contacts];
+    //   ContactsAll.push(newContact);
+    //   return {
+    //     name,
+    //     number,
+    //     contacts: [...ContactsAll],
+    //   };
+
+    setContacts(prevContacts => {
+      // const newContacts = {
+      //   contacts: [...ContactsObj],
+      // };
+
+      let contacstArray = [...prevContacts, newContact];
+
+      const contactsArrayJson = JSON.stringify(contacstArray);
+
+      localStorage.setItem(KEY, contactsArrayJson);
+
+      return contacstArray;
     });
   };
 
-  deleteItem = id => {
-    this.setState(({ contacts }) => {
-      const newContacts = [...contacts];
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('App component');
+
+  //   if (this.state.contacts !== prevState.contacts) {
+  //     console.log('Обновилось поле');
+
+  //     localStorage.setItem('KEY', JSON.stringify(this.state.contacts));
+  //   }
+  // }
+
+  const deleteItem = id => {
+    setContacts(prevContacts => {
+      const newContacts = [...prevContacts];
       const index = newContacts.findIndex(elem => elem.id === id);
       newContacts.splice(index, 1);
-      return {
-        contacts: [...newContacts],
-      };
+
+      // const result = {
+      //   contacts: [...newContacts],
+      // };
+
+      const contactsJson = JSON.stringify(newContacts);
+
+      localStorage.setItem(KEY, contactsJson);
+
+      return newContacts;
     });
   };
 
-  onFilterSearch = e => {
-    this.setState({
-      filter: e.target.value,
-    });
+  const onFilterSearch = e => {
+    setFilter(e.target.value);
   };
 
-  render() {
-    const { filter, contacts } = this.state;
-
+  const filteredSearch = () => {
     const normaliseFilter = filter.toLowerCase();
-    const filteredSearch = contacts.filter(elem =>
+    return contacts.filter(elem =>
       elem.name.toLowerCase().includes(normaliseFilter)
     );
-    return (
-      <div>
-        <Section title="Phonebook" />
-        <Form onSubmit={this.formSubmit} />
-        <Contscts
-          contacts={filteredSearch}
-          onSearch={this.onSearchType}
-          filter={this.filter}
-          onFilter={this.onFilterSearch}
-          deleteItem={this.deleteItem}
-        />
-      </div>
-    );
-  }
-}
+  };
+
+  return (
+    <div>
+      <Section title="Phonebook" />
+      <Form onSubmit={formSubmit} />
+      <Contscts
+        contacts={filteredSearch()}
+        onSearch={this.onSearchType}
+        filter={filter}
+        onFilter={onFilterSearch}
+        deleteItem={deleteItem}
+      />
+    </div>
+  );
+};
