@@ -110,7 +110,6 @@ export const App = () => {
       <Form onSubmit={formSubmit} />
       <Contscts
         contacts={filteredSearch()}
-        onSearch={this.onSearchType}
         filter={filter}
         onFilter={onFilterSearch}
         deleteItem={deleteItem}
