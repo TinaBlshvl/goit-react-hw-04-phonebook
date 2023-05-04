@@ -2,7 +2,7 @@ import css from '../Form/Form.module.css';
 // import { Component } from 'react';
 import { useState } from 'react';
 
-export const Form = formSubmit => {
+export const Form = ({ formSubmit }) => {
   // state = {
   //   name: '',
   //   number: '',
@@ -10,6 +10,7 @@ export const Form = formSubmit => {
 
   const [phoneName, setPhoneName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [value, setValue] = useState('');
 
   const sendNewContact = e => {
     e.preventDefault();
@@ -46,6 +47,7 @@ export const Form = formSubmit => {
         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
         required
         onChange={handleChange}
+        value={setValue}
       />
 
       <h2 className={css.number}>Number</h2>
@@ -57,6 +59,7 @@ export const Form = formSubmit => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         onChange={handleChange}
+        value={setValue}
       />
 
       <button className={css.btn} type="submit">
