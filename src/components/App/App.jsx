@@ -85,9 +85,9 @@ export const App = () => {
       //   contacts: [...newContacts],
       // };
 
-      const contactsJson = JSON.stringify(newContacts);
+      const contactsArrayJson = JSON.stringify(newContacts);
 
-      localStorage.setItem(KEY, contactsJson);
+      localStorage.setItem(KEY, contactsArrayJson);
 
       return newContacts;
     });
@@ -107,7 +107,7 @@ export const App = () => {
   return (
     <div>
       <Section title="Phonebook" />
-      <Form onSubmit={formSubmit} />
+      <Form formSubmit={formSubmit} />
       <Contscts
         contacts={filteredSearch()}
         filter={filter}
